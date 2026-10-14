@@ -70,7 +70,7 @@ orders_cq = orders_ship.groupby(["company", "quarter"], as_index=False).agg(
     order_amount_total=("amount", "sum"),
     n_shipments=("n_shipments", "sum"))
 
-final = rev_long.merge(orders_cq, on=["company", "quarter"], how="left", validate="1:1")
+final = rev_long.merge(orders_cq, on=["company", "quarter"], how="left")
 cols = ["n_orders", "order_amount_total", "n_shipments"]
 final[cols] = final[cols].fillna(0).astype(int)
 
