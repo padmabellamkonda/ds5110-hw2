@@ -52,7 +52,7 @@ print("shipments unique:", shipments["order_id"].is_unique, "| duplicates:", shi
 # Every order's row will repeat once per shipment,
 # so I expect the joined table to have 35 rows, not 20.
 
-joined = orders.merge(shipments, on="order_id", how="left", validate="1:m")
+joined = orders.merge(shipments, on="order_id", how="left")
 print(f"joined: shape = {joined.shape[0]} rows x {joined.shape[1]} columns")
 print("\n")
 
@@ -63,7 +63,7 @@ mean_orders = orders.groupby("customer_id")["amount"].mean()
 print(mean_orders)
 
 ships_per_order = shipments.groupby("order_id").size().rename("n_shipments").reset_index()
-orders_ship = orders.merge(ships_per_order, on="order_id", how="left", validate="1:1")
+orders_ship = orders.merge(ships_per_order, on="order_id", how="left")
 
 orders_cq = orders_ship.groupby(["company", "quarter"], as_index=False).agg(
     n_orders=("order_id", "count"),
