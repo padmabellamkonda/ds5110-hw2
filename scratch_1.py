@@ -34,7 +34,7 @@ ax3.set_xlabel("Shipment rows per order_id")
 ax3.set_xticks([1, 2, 3])
 
 plt.tight_layout()
-plt.savefig("Step 0")
+plt.savefig("step_0.png")
 
 # Revenues is wide because the 12 quarters are column headers. Each variable is not a column.  Revenue is a variable but it is in different spots along the 12 columns.
 # Each observation is not a row so it fails rule 2. Each row holds 12 observations.
@@ -60,13 +60,13 @@ mean_joined = joined.groupby("customer_id")["amount"].mean()
 print(mean_joined)
 
 mean_orders = orders.groupby("customer_id")["amount"].mean()
-print(mean_joined)
+print(mean_orders)
 
 ships_per_order = shipments.groupby("order_id").size().rename("n_shipments").reset_index()
 orders_ship = orders.merge(ships_per_order, on="order_id", how="left", validate="1:1")
 
 orders_cq = orders_ship.groupby(["company", "quarter"], as_index=False).agg(
-    n_orders=("order_id", "nunique"),
+    n_orders=("order_id", "count"),
     order_amount_total=("amount", "sum"),
     n_shipments=("n_shipments", "sum"))
 
@@ -77,6 +77,7 @@ final[cols] = final[cols].fillna(0).astype(int)
 final = final.sort_values(["company", "quarter"]).reset_index(drop=True)
 print(f"final: shape = {final.shape[0]} rows x {final.shape[1]} columns")
 print(final.head())
+final.to_csv("final_company_quarter.csv", index=False)
 
 
 plt.figure(figsize=(13, 5))
@@ -94,4 +95,4 @@ plt.title("Revenue by company over time")
 plt.xticks(rotation=60)
 
 plt.tight_layout()
-plt.savefig("Side-By-Side:Step 5")
+plt.savefig("step_5.png")
